@@ -15,3 +15,11 @@ smc_util [-c] [-q] [-d] [-D] [-p] [-f] [-v] [-t] [-s] [-x] [-n] [-r <key> ] [ -w
 -w <key>    write value to key
 -l          list all keys to stdout
 with out options -w or -l the default is to read args[] as a series of keys to display
+
+
+Note: at this time only fan variables are updatable:
+
+(memcmp(key, "F0M", 3)== 0) ||
+(memcmp(key, "F1M", 3)== 0) ||
+(memcmp(key, "F0A", 3)== 0) ||
+(memcmp(key, "F1A", 3)== 0) 

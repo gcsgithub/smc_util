@@ -407,7 +407,7 @@ int smc_key_write(io_connect_t  conn, char *key, char *value)
     if ((memcmp(key, "F0M", 3)== 0) ||
         (memcmp(key, "F1M", 3)== 0) ||
         (memcmp(key, "F0A", 3)== 0) ||
-        (memcmp(key, "F0A", 3)== 0)  ){
+        (memcmp(key, "F1A", 3)== 0)  ){
         rpm = atoi(value);
         rval = smc_fan_set(conn, key, rpm);
     }
