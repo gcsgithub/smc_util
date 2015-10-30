@@ -121,7 +121,7 @@ typedef struct  ALSLuxThrsh {
 } alt_t;                        // {alt	 ALS analog lux calculation thresholds.
                     
                     
-struct ALSValue {
+typedef struct ALSValue {
         Flag    fValid;         // If TRUE, data in this struct is valid.
         Flag    fHighGain;      // If TRUE, ui16Chan0/1 are high-gain
                                 // readings.  If FALSE, ui16Chan0/1 are low-gain readings.
