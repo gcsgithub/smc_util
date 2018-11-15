@@ -14,7 +14,7 @@
 extern  gbl_params_t PARAMS;
 
 /////////////////////////////////////////
-int reportfd(int flgmask, char *fmt, ...)
+int reportfd(flg_e flgmask, char *fmt, ...)
 /////////////////////////////////////////
 {
     va_list  ap;
@@ -25,25 +25,35 @@ int reportfd(int flgmask, char *fmt, ...)
     rval  = -1;
     
     va_start(ap, fmt);
-    if (flgmask & F_INDEX) {
+    if (flag_test(F_INDEX)) {
         rval = fprintf(params->outfd, "(%ld)", (long) params->fldidx++);
         if (rval>=0) {
             rval = vfprintf(params->outfd, fmt, ap);
         }
     }
     else {
-        if ((flgmask == 0) || (params->flg & flgmask)) {
+        if ((flag_test(F_ALWAYS)) || (flag_test(flgmask))) {
             rval = vfprintf(params->outfd, fmt, ap);
         }
     }
-    if ((flgmask & F_NL) && (params->newline) && (*params->newline)) {
-        fputc(*params->newline, params->outfd);
-    }
+ 
+   if (flgmask & F_NL) {
+       newline();
+   }
     
     return(rval);
 }
 
+void newline()
+{
+    gbl_params_t    *params = &PARAMS;
+    
+    if ((params->newline) && (*params->newline)) {
+        fputc(*params->newline, params->outfd);
+    }
+}
 
+/*
 /////////////////////////
 int reportfd_fldidx(void)
 /////////////////////////
@@ -55,6 +65,7 @@ int reportfd_fldidx(void)
     
     return(rval);
 }
+*/
 
 //////////////////////////
 int flag_test(int flgmask)
@@ -62,14 +73,14 @@ int flag_test(int flgmask)
 {
     int rval;
     gbl_params_t    *params = &PARAMS;
-    
-    if (params->flg & flgmask) {
+    // 228 = F_DESCRIBE(128), F_VALUES(64), F_NOISY(32), F_DUMPHEX(4)
+    if (flgmask == F_ALWAYS) {
         rval = 1;
     }
     else {
-        rval = 0;
+        rval = params->flg & flgmask;
     }
-    
+ 
     return(rval);
 }
 
