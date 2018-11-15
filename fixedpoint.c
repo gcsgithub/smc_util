@@ -49,11 +49,16 @@ double  numeric2float(char *dtype, char *dbytes)
     int     dsize;  // howmany bytes needed to hold total_bits rounded up of course
     int     sign;
     int     thebits;
+    char    *bitsptr = (char *)&thebits;
+    char    fltval[4];
+    
     int     bitcount;
     int     idx;
     int     scale;
     typedef enum {
-        t_int, t_fixed
+        t_int    = 1,
+        t_fixed  = 2,
+        t_float  = 3
     } dtype_t;
     
     dtype_t dt;
@@ -64,37 +69,51 @@ double  numeric2float(char *dtype, char *dbytes)
         hassign = 1;    // Signed fixed Point
         dt = t_fixed;
         
-    } else if (dtype[0] == 'f' && dtype[1] == 'p') {
+    }
+    else if (dtype[0] == 'f' && dtype[1] == 'p') {
         hassign = 0;    // Unsigned fixed Point
-        dt = t_fixed;
+        dt      = t_fixed;
         
-    } else if (dtype[0] == 'u' && dtype[1] == 'i') { //  "ui8 ", "ui16", "ui32
-        hassign = 0;    // Unsigned Integer
-        dt = t_int;
-        
-    } else if (dtype[0] == 's' && dtype[1] == 'i') { //  "si8 ", "si16", "si32"
-        hassign = 1;    // Signed Integer
-        dt = t_int;
-        
-    } else {
-        result = nan("-2");  // not a numeric type we know about
+    }
+    else if (dtype[0] == 'f' && dtype[1] == 'l' && dtype[2] == 't') { // "flt "
+        dt         = t_float;
+        hassign    = 0;
+        total_bits = 32;
+    }
+    else if (dtype[0] == 'u' && dtype[1] == 'i') { //  "ui8 ", "ui16", "ui32
+        hassign    = 0;    // Unsigned Integer
+        dt         = t_int;
+    }
+    else if (dtype[0] == 's' && dtype[1] == 'i') { //  "si8 ", "si16", "si32"
+        hassign    = 1;    // Signed Integer
+        dt         = t_int;
+    }
+    else {
+        result     = nan("-2");  // not a numeric type we know about
         return(result);
     }
     
-    if (dt == t_fixed) {
-        bits_left  = hextodecimal(dtype[2]);
-        bits_right = hextodecimal(dtype[3]);
-        total_bits = hassign + bits_left + bits_right;
-
-    } else {
-        total_bits = atoi(&dtype[2]);
+    switch(dt) {
+        case    t_fixed:
+            bits_left  = hextodecimal(dtype[2]);
+            bits_right = hextodecimal(dtype[3]);
+            total_bits = hassign + bits_left + bits_right;
+            break;
+            
+        case    t_float:
+            total_bits = 32;
+            break;
+            
+        default:
+            total_bits = atoi(&dtype[2]);
+            break;
     }
     
-    dsize   = total_bits >> 3;
+    dsize   = total_bits >> 3;     // howmany bytes
     if ((dsize<<3) < total_bits) { // check of a remainder and round up if needed
         dsize++;
     }
-
+    
     if (dsize <1 || dsize > 4) {
         result = nan("-3");
         return(result);
@@ -103,23 +122,24 @@ double  numeric2float(char *dtype, char *dbytes)
     if (hassign) {
         sign = dbytes[0] >> 7;
         thebits = dbytes[0] & 0x7f;
-    } else {
+    }
+    else {
         sign = 0;
         thebits = dbytes[0] & 0xff;        
     }
     
     bitcount = total_bits-8; // consumed 8 bits already
-    // used the 1st now consume all but last 
+                             // used the 1st now consume all but last 
     for(idx=1;idx < dsize - 1;idx++)  {
-        thebits <<=8;   // make room for more
-        thebits |= dbytes[idx];
+        thebits  <<=8;   // make room for more
+        thebits  |= dbytes[idx];
         bitcount -= 8; // consume 8 bits
     }
     // TODO: maybe reinstate the mask calculation to allow for chunks smaller than 8bits
     // to be properly masked off
     thebits <<= bitcount; // make room
     thebits |= (dbytes[idx] >> (8-bitcount)) &0xff;
- 
+    
     switch (dt) {
         case t_int:
             scale = 1;
@@ -128,7 +148,16 @@ double  numeric2float(char *dtype, char *dbytes)
             // now scale the integer into a floating point number
             scale = 1<<(bits_right);
             break;
+        case t_float:
+            fltval[0] = bitsptr[3];
+            fltval[1] = bitsptr[2];
+            fltval[2] = bitsptr[1];
+            fltval[3] = bitsptr[0];
             
+            result = (double) (float) *(float *) fltval;
+            //result = (double) (float ) thebits;
+            return (result);
+            break;
         default:
             break;
     }
@@ -144,9 +173,9 @@ double  numeric2float(char *dtype, char *dbytes)
 
 UInt32 smctohl(char *smcintptr)
 { // read unaligned 32bit value in SMC word order
-    // convert it to Intel little endian
-    // Probably should make this usable on bigendian machines but
-    // they are not likely to exist with this SMC
+  // convert it to Intel little endian
+  // Probably should make this usable on bigendian machines but
+  // they are not likely to exist with this SMC
     
     UInt32 rval;
     int idx;
