@@ -11,7 +11,7 @@
 		4D589BFD147FAF9700C0ECA5 /* fixedpoint.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D589BFB147FAF9700C0ECA5 /* fixedpoint.c */; };
 		4D589BFF147FC58600C0ECA5 /* smc_util.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D589BFE147FC58600C0ECA5 /* smc_util.c */; };
 		4D61601518E5BA6600AF9EC8 /* reportfd.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D61601418E5BA6600AF9EC8 /* reportfd.c */; };
-		4D7CB06A147FCD3C005EED28 /* smc_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D7CB069147FCD3C005EED28 /* smc_utils.c */; };
+		4D7CB06A147FCD3C005EED28 /* optarg.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D7CB069147FCD3C005EED28 /* optarg.c */; };
 		4D7CB06D147FE4A0005EED28 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D7CB06C147FE4A0005EED28 /* IOKit.framework */; };
 		4D84E1921487933F008077D4 /* smc_desc.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D84E1911487933F008077D4 /* smc_desc.c */; };
 		4DFDD9B914964EA000B64376 /* smc_types.c in Sources */ = {isa = PBXBuildFile; fileRef = 4DFDD9B814964EA000B64376 /* smc_types.c */; };
@@ -40,7 +40,7 @@
 		4D61601318E5BA5500AF9EC8 /* reportfd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = reportfd.h; sourceTree = "<group>"; };
 		4D61601418E5BA6600AF9EC8 /* reportfd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = reportfd.c; sourceTree = "<group>"; };
 		4D61601618E5BC4500AF9EC8 /* smc_utils_gbl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = smc_utils_gbl.h; sourceTree = "<group>"; };
-		4D7CB069147FCD3C005EED28 /* smc_utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; lineEnding = 0; path = smc_utils.c; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.c; };
+		4D7CB069147FCD3C005EED28 /* optarg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; lineEnding = 0; path = optarg.c; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.c; };
 		4D7CB06C147FE4A0005EED28 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		4D7CB06E147FF451005EED28 /* smc_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = smc_defs.h; sourceTree = "<group>"; };
 		4D84E19014879156008077D4 /* smc_desc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = smc_desc.h; sourceTree = "<group>"; };
@@ -75,7 +75,7 @@
 				4D61601318E5BA5500AF9EC8 /* reportfd.h */,
 				4D61601418E5BA6600AF9EC8 /* reportfd.c */,
 				4D589C00147FC5BD00C0ECA5 /* smc_utils.h */,
-				4D7CB069147FCD3C005EED28 /* smc_utils.c */,
+				4D7CB069147FCD3C005EED28 /* optarg.c */,
 				4DFDD9BB14964EAD00B64376 /* smc_types.h */,
 				4DFDD9B814964EA000B64376 /* smc_types.c */,
 				4D84E19014879156008077D4 /* smc_desc.h */,
@@ -123,7 +123,7 @@
 		4D589BE5147FADB500C0ECA5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Garetech Computer Solutions";
 			};
 			buildConfigurationList = 4D589BE8147FADB500C0ECA5 /* Build configuration list for PBXProject "smc_utils" */;
@@ -151,7 +151,7 @@
 				4D589BFD147FAF9700C0ECA5 /* fixedpoint.c in Sources */,
 				4D61601518E5BA6600AF9EC8 /* reportfd.c in Sources */,
 				4D589BFF147FC58600C0ECA5 /* smc_util.c in Sources */,
-				4D7CB06A147FCD3C005EED28 /* smc_utils.c in Sources */,
+				4D7CB06A147FCD3C005EED28 /* optarg.c in Sources */,
 				4D84E1921487933F008077D4 /* smc_desc.c in Sources */,
 				4DFDD9B914964EA000B64376 /* smc_types.c in Sources */,
 			);
@@ -164,11 +164,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
@@ -192,7 +202,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
@@ -202,11 +212,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
@@ -223,7 +243,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -231,6 +251,7 @@
 		4D589BF9147FADB600C0ECA5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -238,6 +259,7 @@
 		4D589BFA147FADB600C0ECA5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
