@@ -7,6 +7,7 @@
 //
 
 #include "smc_utils.h"
+#include "reportfd.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <errno.h>
@@ -62,16 +63,16 @@ int main(int argc, char *argv[])
     params->dbg      =   0;
     
     params->fldidx   =   1;
-    key             =   NULL;
-    value           =   NULL;
-    direction       =   RD;
+    key              =   NULL;
+    value            =   NULL;
+    direction        =   RD;
     params->outfd    =   stdout;
-    params->flg      =   0;
+    params->flg      =   F_ALWAYS;
     params->newline  = "\n";
     params->model    = get_sysmodel_dynamic();
     
     params->flg      |= F_NOISY; // by default noisy output
-    while (!usage && ((c=getopt(argc,argv, "pDcqtsxnvdfw:lh?")) != -1 )) {
+    while (!usage && ((c=getopt(argc,argv, "pDcqtsxXOnvdfw:lh?")) != -1 )) {
         switch(c) {
             case 'p':
                 params->flg |= F_PRIVATE;
@@ -94,8 +95,15 @@ int main(int argc, char *argv[])
             case 'x':
                 params->flg |= F_DUMPHEX;
                 break;
+            case 'X':
+                params->flg |= F_DUMPHEX;
+                params->flg |= F_BINARY;
+                break;
             case 'n':
                 params->flg |= F_NL;
+                break;
+            case 'O':
+                params->flg |= F_BYTEORDER; // flip byteorder
                 break;
             case 'v':
                 params->flg |= F_VALUES;
@@ -113,7 +121,7 @@ int main(int argc, char *argv[])
             case 'w':
                 key = strdup(optarg);
                 if (key == NULL ) {
-                    if (params->flg&F_NOISY)
+                    if (flag_test(F_NOISY))
                         fprintf(stderr, "# Out of memory on args, impossible i say ;)\n");
                     exit(ENOMEM);
                 }
@@ -136,12 +144,12 @@ int main(int argc, char *argv[])
 	    dousage(params->progid);
         exit(EINVAL);
 	}
-    if (params->flg & F_DEBUG) {
+    if (flag_test(F_DEBUG)) {
         fprintf(params->outfd, "# System Model: %s %s", params->model, params->newline);
     }
     r0 = smc_open(&params->conn);
     if (r0 != kIOReturnSuccess) {
-        if (params->flg&F_NOISY)
+        if (flag_test(F_NOISY))
             fprintf(stderr, "# Error opening SMC subsystem: %d\n", r0);
         
     } else {
@@ -151,7 +159,7 @@ int main(int argc, char *argv[])
                 if (argc == 1) {
                     value = strdup(argv[0]);
                     if (value == NULL ) {
-                        if (params->flg&F_NOISY)
+                        if (flag_test(F_NOISY))
                             fprintf(stderr, "# Out of memory on args, impossible i say ;)\n");
                         exit(ENOMEM);
                     }
@@ -176,7 +184,7 @@ int main(int argc, char *argv[])
                 for (idx=0;idx<argc;idx++) {
                     r0 = smc_key_display(params->conn, argv[idx]);
                     if (r0 != kIOReturnSuccess) {
-                        if (params->flg&F_NOISY)
+                        if (flag_test(F_NOISY))
                             fprintf(stderr, "# Error displaying key: %s: %d\n", argv[idx], r0);
                     }
                 }
@@ -184,7 +192,7 @@ int main(int argc, char *argv[])
                 
             case RW: // just to complete the values of direction, no function here
             case UD:
-                if (params->flg&F_NOISY)
+                if (flag_test(F_NOISY))
                     fprintf(stderr, "# internal error undefined direction\n");
                 exit(EINVAL);
                 break;
@@ -192,7 +200,7 @@ int main(int argc, char *argv[])
         // TODO: r0 may hold a failure from an operation ?
         r0 = smc_close(&params->conn);
         if (r0 != kIOReturnSuccess) {
-            if (params->flg&F_NOISY)
+            if (flag_test(F_NOISY))
                 fprintf(stderr, "# Error closing SMC subsystem: %d\n", r0);
         }
     }
