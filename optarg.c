@@ -594,7 +594,7 @@ int smc_keyval_display(SMC_key_val_t *keyvalue)
                         Reflect,
                         ALSSensors,
                         (LidDelay/10.0),
-                         "wtf");
+                         "");
                 
             }
             else if (memcmp(keyvalue->vtype,"{ali",4) == 0) { // ALSSensor structure contains sensor-specific information for this system
