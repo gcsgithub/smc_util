@@ -33,6 +33,7 @@ typedef enum {
     K_VAR_W         =   (KA_W|KA_VAR)
 } smc_attr_e;
 
+// {"IG0R","fp4c",0,K_VAR_ATOM_RW,"GPU 0 rail current."},
 typedef struct smc_desc_s {
     char        *d_keyname;
     char        *d_keytype;
