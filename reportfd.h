@@ -11,9 +11,10 @@
 
 #include "smc_utils_gbl.h"
 
-int reportfd(int flgmask, char *fmt, ...);
+int reportfd(flg_e flgmask, char *fmt, ...);
 int reportc(int c);
-int reportfd_fldidx(void);
+//int reportfd_fldidx(void);
 int flag_test(int flgmask);
+void newline(void);
 
 #endif
