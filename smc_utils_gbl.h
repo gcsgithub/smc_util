@@ -13,18 +13,20 @@
 #include <IOKit/IOKitLib.h>
 
 typedef enum {
-    F_ALWAYS   =    0,
-    F_VERBOSE  =    1,
-    F_NL       =    2,
-    F_DUMPHEX  =    4,
-    F_SHOWSIZE =    8,
-    F_SHOWTYPE =   16,
-    F_NOISY    =   32,
-    F_VALUES   =   64,
-    F_DESCRIBE =  128,
-    F_PRIVATE  =  256,
-    F_DEBUG    =  512,
-    F_INDEX    = 1024
+    F_ALWAYS   =    1,
+    F_VERBOSE  =    2,
+    F_NL       =    4,
+    F_DUMPHEX  =    8,
+    F_SHOWSIZE =   16,
+    F_SHOWTYPE =   32,
+    F_NOISY    =   64,
+    F_VALUES   =  128,
+    F_DESCRIBE =  256,
+    F_PRIVATE  =  512,
+    F_DEBUG    = 1024,
+    F_INDEX    = 2048,
+    F_BINARY   = 4096,
+    F_BYTEORDER= 8192
 } flg_e;
 
 typedef struct {
